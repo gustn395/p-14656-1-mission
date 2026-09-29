@@ -28,6 +28,7 @@ public class BaseInitData {
             work7();
             work8();
             work9();
+            work10();
         };
     }
 
@@ -144,5 +145,16 @@ public class BaseInitData {
         }
 
         log.debug("Comment 조회 완료");
+    }
+
+    private void work10(){
+        log.debug("Comment 수정");
+
+        for (var comment : commentService.findAll()) {
+            String newContent = comment.getContent() + " [Edited]";
+            var updatedComment = commentService.update(comment.getId(), newContent);
+
+            log.debug("Updated Comment: {}", updatedComment);
+        }
     }
 }
