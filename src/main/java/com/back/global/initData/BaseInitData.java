@@ -18,6 +18,7 @@ public class BaseInitData {
     public ApplicationRunner baseInitDataRunner (){
         return args->{
             work1();
+            work2();
         };
     }
 
@@ -25,6 +26,8 @@ public class BaseInitData {
         log.debug("Post entity count : {}",postService.count());
 
         // Post가 없을 경우(count() == 0) 10개의 샘플 Post 생성
+        log.debug("샘플 Post 데이터 생성");
+
         if (postService.count() == 0){
             for (int i = 1; i <= 10; i++) {
                 String title = "Sample Post Title " + i;
@@ -36,7 +39,14 @@ public class BaseInitData {
                 log.debug("Created Post: {}", post);
             }
         }
+    }
 
+    private void work2(){
+        log.debug("기존 Post 전체 조회");
+
+        for (Post post : postService.findAll()) {
+            log.debug("Existing Post: {}", post);
+        }
     }
 
 }
