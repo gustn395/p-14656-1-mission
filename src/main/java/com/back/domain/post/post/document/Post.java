@@ -1,5 +1,6 @@
 package com.back.domain.post.post.document;
 
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
@@ -10,7 +11,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.time.OffsetDateTime;
 
 @Document(indexName = "posts")
-@Getter
+@Data // @Data는 @Getter, @Setter, @ToString, @EqualsAndHashCode 포함
 public class Post {
     @Id
     // Elasticsearch에서는 ID가 보통 String 타입입니다. 자동 생성 시 UUID 형태의 문자열이 할당
@@ -49,15 +50,4 @@ public class Post {
         this.lastModifiedAt = OffsetDateTime.now();
     }
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", author='" + author + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastModifiedAt=" + lastModifiedAt +
-                '}';
-    }
 }
