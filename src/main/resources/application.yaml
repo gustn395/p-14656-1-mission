@@ -1,9 +1,14 @@
 spring:
   application:
     name: back
+  profiles:
+    active: dev
   output:
     ansi:
       enabled: ALWAYS
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 logging:
   level:
     com:
