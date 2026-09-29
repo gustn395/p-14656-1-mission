@@ -1,6 +1,7 @@
 package com.back.domain.post.post.controller;
 
 import com.back.BaseTest;
+import com.back.domain.post.post.document.Post;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class PostControllerTests extends BaseTest {
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // title 누락 시 400 응답
     @Test
     @DisplayName("POST /api/v1/posts - 실패 (title 누락)")
     void t1() throws Exception {
@@ -40,6 +42,7 @@ public class PostControllerTests extends BaseTest {
         ).andExpect(status().isBadRequest());
     }
 
+    // 유효한 요청 시 201 응답 및 생성된 Post 반환
     @Test
     @DisplayName("POST /api/v1/posts - 성공")
     void t2() throws Exception {
@@ -62,6 +65,7 @@ public class PostControllerTests extends BaseTest {
                 .andExpect(jsonPath("id").isNotEmpty());
     }
 
+    // 요청 시 200 응답 및 리스트 반환 확인
     @Test
     @DisplayName("GET /api/v1/posts - 성공")
     void t3() throws Exception {
@@ -70,5 +74,47 @@ public class PostControllerTests extends BaseTest {
                                 .contentType("application/json")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    // 존재하지 않는 ID 조회 시 404 응답
+    @Test
+    @DisplayName("GET /api/v1/posts/{id} - 실패")
+    void t4() throws Exception {
+        mockMvc.perform(
+                get("/api/v1/posts/{id}", "nonexistent-id")
+                        .contentType("application/json")
+        ).andExpect(status().isNotFound());
+    }
+
+    // 존재하는 Post 조회 시 200 응답 및 Post 반환
+    @Test
+    @DisplayName("GET /api/v1/posts/{id} - 성공")
+    void t5() throws Exception {
+        // 먼저 포스트를 생성
+        String response = mockMvc.perform(
+                        post("/api/v1/posts")
+                                .contentType("application/json")
+                                .content(
+                                        objectMapper.writeValueAsBytes(
+                                                new PostController.CreatePostRequest(
+                                                        "Test Title for GetById",
+                                                        "Test Content for GetById",
+                                                        "Test Author for GetById"
+                                                )
+                                        )
+                                )
+                ).andExpect(status().isCreated())
+                .andReturn().getResponse()
+                .getContentAsString();
+
+        Post createdPost = objectMapper.readValue(response, Post.class);
+
+        mockMvc.perform(get("/api/v1/posts/{id}", createdPost.getId())
+                        .contentType("application/json")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(createdPost.getId()))
+                .andExpect(jsonPath("title").value("Test Title for GetById"))
+                .andExpect(jsonPath("content").value("Test Content for GetById"))
+                .andExpect(jsonPath("author").value("Test Author for GetById"));
     }
 }
