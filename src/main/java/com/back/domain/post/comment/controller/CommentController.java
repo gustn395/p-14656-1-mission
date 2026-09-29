@@ -48,4 +48,10 @@ public class CommentController {
         postService.findById(postId);
         return commentService.findByPostId(postId);
     }
+
+    @GetMapping("/{id}")
+    public Comment findById(@PathVariable String postId, @PathVariable String id) {
+        postService.findById(postId);
+        return commentService.findById(id);
+    }
 }

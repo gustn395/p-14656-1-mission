@@ -105,6 +105,7 @@ public class CommentControllerTests extends BaseTest {
                 .andExpect(jsonPath("id").isNotEmpty());
     }
 
+    // test용 댓글 생성(t5 사용용)
     private Comment createTestComment(String postId) throws Exception {
         String response = mockMvc.perform(
                         post("/api/v1/posts/{postId}/comments", postId)
@@ -124,6 +125,7 @@ public class CommentControllerTests extends BaseTest {
         return objectMapper.readValue(response, Comment.class);
     }
 
+    // 댓글 읽기 실패
     @Test
     @DisplayName("GET /api/v1/posts/{postId}/comments - 실패 (존재하지 않는 postId)")
     void t4() throws Exception {
@@ -133,6 +135,7 @@ public class CommentControllerTests extends BaseTest {
         ).andExpect(status().isNotFound());
     }
 
+    // 댓글 읽기 성공
     @Test
     @DisplayName("GET /api/v1/posts/{postId}/comments - 성공")
     void t5() throws Exception {
@@ -146,5 +149,32 @@ public class CommentControllerTests extends BaseTest {
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    // 댓글 단건 조회 실패
+    @Test
+    @DisplayName("GET /api/v1/posts/{postId}/comments/{id} - 실패 (존재하지 않는 commentId)")
+    void t6() throws Exception {
+        Post post = createTestPost();
+        mockMvc.perform(
+                get("/api/v1/posts/{postId}/comments/{id}", post.getId(), "nonexistent-comment-id")
+                        .contentType("application/json")
+        ).andExpect(status().isNotFound());
+    }
+
+    // 댓글 단건 조회 성공
+    @Test
+    @DisplayName("GET /api/v1/posts/{postId}/comments/{id} - 성공")
+    void t7() throws Exception {
+        Post post = createTestPost();
+        Comment comment = createTestComment(post.getId());
+
+        mockMvc.perform(
+                        get("/api/v1/posts/{postId}/comments/{id}", post.getId(), comment.getId())
+                                .contentType("application/json")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(comment.getId()))
+                .andExpect(jsonPath("content").value("Test Comment Content"))
+                .andExpect(jsonPath("author").value("Test Comment Author"));
     }
 }
