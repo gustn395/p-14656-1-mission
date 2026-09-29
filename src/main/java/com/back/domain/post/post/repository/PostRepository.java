@@ -11,4 +11,13 @@ public interface PostRepository extends ElasticsearchRepository<Post,String> {
     List<Post> findAll();
 
     Page<Post> findAll(Pageable pageable);
+
+    // 제목 검색
+    Page<Post> findByTitleContaining(String keyword, Pageable pageable);
+
+    // 내용 검색
+    Page<Post> findByContentContaining(String keyword, Pageable pageable);
+
+    // 제목 + 내용 검색
+    Page<Post> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
 }
