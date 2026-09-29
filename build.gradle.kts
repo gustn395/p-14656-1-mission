@@ -22,15 +22,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
 
-    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    // Lombok
     compileOnly("org.projectlombok:lombok")
 
     annotationProcessor("org.projectlombok:lombok")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Valudation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // Testcontainers
+    testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.8"))
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers-elasticsearch")
 }
 
 tasks.withType<Test> {
