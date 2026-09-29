@@ -1,5 +1,6 @@
 package com.back.domain.post.post.document;
 
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -9,6 +10,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.time.OffsetDateTime;
 
 @Document(indexName = "posts")
+@Getter
 public class Post {
     @Id
     // Elasticsearch에서는 ID가 보통 String 타입입니다. 자동 생성 시 UUID 형태의 문자열이 할당
