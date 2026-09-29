@@ -44,8 +44,6 @@ public class PostService {
             post.setContent(content);
         }
 
-        post.setLastModifiedAt(java.time.OffsetDateTime.now());
-
         return postRepository.save(post);
     }
 
