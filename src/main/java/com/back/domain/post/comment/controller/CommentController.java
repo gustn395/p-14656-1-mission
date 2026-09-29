@@ -66,4 +66,14 @@ public class CommentController {
         postService.findById(postId);
         return commentService.update(id, request.content);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String postId, @PathVariable String id){
+        postService.findById(postId);
+
+        Comment comment = commentService.findById(id);
+        commentService.delete(comment);
+
+        return ResponseEntity.noContent().build();
+    }
 }
